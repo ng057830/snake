@@ -12,7 +12,7 @@
             --background-color: #1a1a1a;
             --text-color: #ffffff;
             --accent-color: #50c878;
-            --food-color: #e74c3c;
+            --food-color: #e74c3c;  /* Color único para todas las galletas */
         }
 
         body {
@@ -130,8 +130,6 @@
                 this.cellSize = 20;
                 this.canvas.width = 400;
                 this.canvas.height = 400;
-                this.gridWidth = this.canvas.width / this.cellSize;
-                this.gridHeight = this.canvas.height / this.cellSize;
                 
                 this.snake = [];
                 this.direction = 'right';
@@ -240,10 +238,6 @@
                     case 'right': head.x++; break;
                 }
 
-                // Manejar el cruce de bordes
-                head.x = (head.x + this.gridWidth) % this.gridWidth;
-                head.y = (head.y + this.gridHeight) % this.gridHeight;
-
                 if(this.checkCollision(head)) {
                     this.gameOver();
                     return;
@@ -272,8 +266,11 @@
             }
 
             checkCollision(head) {
-                // Solo verifica colisión con el propio cuerpo y longitud mínima
-                return this.snake.some(segment => segment.x === head.x && segment.y === head.y) ||
+                return head.x < 0 || 
+                       head.x >= this.canvas.width / this.cellSize ||
+                       head.y < 0 || 
+                       head.y >= this.canvas.height / this.cellSize ||
+                       this.snake.some(segment => segment.x === head.x && segment.y === head.y) ||
                        this.snake.length < 3;
             }
 
@@ -293,7 +290,7 @@
                     );
                 });
 
-                // Draw food
+                // Draw food - todas las galletas del mismo color
                 this.food.forEach(food => {
                     this.ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--food-color').trim();
                     
